@@ -1,13 +1,14 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import path from 'path';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 import { translateToChinese, isMostlyEnglish } from '../src/lib/translate';
 import { classifySkill } from '../src/lib/classify';
 
-const dbUrl = process.env.DATABASE_URL ?? `file:${path.resolve(process.cwd(), 'prisma/dev.db')}`;
-process.env.DATABASE_URL = dbUrl;
-
-const prisma = new PrismaClient();
+const adapter = new PrismaLibSql({
+  url: process.env.DATABASE_URL ?? 'file:./prisma/dev.db',
+  authToken: process.env.DATABASE_AUTH_TOKEN,
+});
+const prisma = new PrismaClient({ adapter });
 
 interface GitHubFileResult {
   name: string;
