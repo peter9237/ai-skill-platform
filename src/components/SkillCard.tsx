@@ -1,8 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { getCategoryLabel, getCategoryIcon } from '@/shared/categories';
 
 interface Skill {
@@ -42,15 +40,15 @@ function formatStars(stars: number): string {
 function getSourceIcon(sourceType: string): string {
   switch (sourceType) {
     case 'github':
-      return '🐙';
+      return '⌥'; // 极简符号代替 emoji
     case 'marketplace':
-      return '🏪';
+      return '◈';
     case 'community':
-      return '💬';
+      return '◍';
     case 'user':
-      return '👤';
+      return '◇';
     default:
-      return '📎';
+      return '·';
   }
 }
 
@@ -62,52 +60,49 @@ function getPlatformLabel(platform: string[]): string {
 
 export function SkillCard({ skill }: { skill: Skill }) {
   return (
-    <Link href={`/skill/${skill.id}`}>
-      <Card className="card-hover h-full cursor-pointer border-gray-100 hover:border-gray-200">
-        <CardContent className="p-5 flex flex-col h-full">
+    <Link href={`/skill/${skill.id}`} className="group block h-full">
+      <div className="h-full border border-zinc-200 rounded-xl transition-all duration-200 group-hover:border-zinc-300 group-hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] group-hover:-translate-y-0.5">
+        <div className="p-5 flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
               {skill.isNew === 1 && (
-                <Badge className="shrink-0 bg-blue-500 hover:bg-blue-500 text-white text-[10px] px-1.5 py-0">
-                  NEW
-                </Badge>
+                <span className="text-[10px] font-medium tracking-wider text-zinc-400 uppercase">
+                  New
+                </span>
               )}
-              <span className="text-xs text-gray-400 shrink-0">{getSourceIcon(skill.sourceType)}</span>
+              <span className="text-zinc-300 text-sm leading-none">
+                {getSourceIcon(skill.sourceType)}
+              </span>
             </div>
             {skill.stars > 0 && (
-              <span className="flex items-center gap-1 text-xs text-gray-400 shrink-0">
-                ⭐ {formatStars(skill.stars)}
+              <span className="text-xs text-zinc-400 tabular-nums">
+                {formatStars(skill.stars)}
               </span>
             )}
           </div>
 
           {/* Name */}
-          <h3 className="font-semibold text-gray-900 mb-1.5 line-clamp-1 break-all">
+          <h3 className="font-medium text-[15px] text-zinc-900 leading-snug mb-2 truncate">
             {skill.name}
           </h3>
 
           {/* Summary */}
-          <p className="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">
+          <p className="text-[13px] leading-relaxed text-zinc-500 line-clamp-2 mb-4 flex-1">
             {skill.summaryCn}
           </p>
 
           {/* Footer */}
-          <div className="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-gray-50">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-normal shrink-0">
-                {getCategoryIcon(skill.category)} {getCategoryLabel(skill.category)}
-              </Badge>
-              <span className="text-xs text-gray-300 truncate">
-                {getPlatformLabel(skill.platform)}
-              </span>
-            </div>
-            <span className="text-xs text-gray-300 shrink-0">
+          <div className="flex items-center justify-between gap-2 pt-3 border-t border-zinc-100">
+            <span className="text-[11px] text-zinc-400 truncate">
+              {getCategoryIcon(skill.category)} {getCategoryLabel(skill.category)}
+            </span>
+            <span className="text-[11px] text-zinc-300 shrink-0 tabular-nums">
               {formatTime(skill.createdAt)}
             </span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </Link>
   );
 }

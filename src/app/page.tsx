@@ -66,7 +66,6 @@ export default function HomePage() {
     fetchSkills();
   }, [fetchSkills]);
 
-  // Reset page when sort or category changes
   useEffect(() => {
     setPage(1);
   }, [sort, category]);
@@ -80,153 +79,176 @@ export default function HomePage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Hero Section */}
-      <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
-          发现优质 AI 技能
-        </h1>
-        <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-          每日自动采集全球最新 AI Skill，覆盖 Claude Code、Codex、Cursor 等主流平台。
-          中文浏览，轻松发现。
-        </p>
-        <p className="text-sm text-gray-400 mt-2">
-          已收录 <span className="font-semibold text-gray-600">{total.toLocaleString()}</span> 个 Skill
-        </p>
-      </div>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10 py-20">
+        {/* Hero */}
+        <header className="mb-16">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">
+            发现优质 AI 技能
+          </h1>
+          <p className="text-[15px] text-zinc-500 max-w-xl leading-relaxed">
+            聚合全球 AI Skill，每日自动采集。中文浏览，轻松发现。
+          </p>
+          <p className="text-[13px] text-zinc-400 mt-3 tabular-nums">
+            {total.toLocaleString()} 个 Skill 已收录
+          </p>
+        </header>
 
-      {/* Sort Toggle */}
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-sm text-gray-400 mr-1">排序：</span>
-        <button
-          onClick={() => handleSortChange('hot')}
-          className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-            sort === 'hot'
-              ? 'bg-gray-900 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
-        >
-          🔥 最热
-        </button>
-        <button
-          onClick={() => handleSortChange('new')}
-          className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-            sort === 'new'
-              ? 'bg-gray-900 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
-        >
-          🆕 最新
-        </button>
-      </div>
-
-      {/* Category Filter */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        <button
-          onClick={() => handleCategoryChange('all')}
-          className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-            category === 'all'
-              ? 'bg-gray-900 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
-        >
-          全部
-        </button>
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => handleCategoryChange(cat.id)}
-            className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-              category === cat.id
-                ? 'bg-gray-900 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-            }`}
-          >
-            {cat.icon} {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Content */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkillCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="text-center py-20">
-          <p className="text-gray-400 text-lg mb-4">{error}</p>
-          <button
-            onClick={fetchSkills}
-            className="px-5 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            重新加载
-          </button>
-        </div>
-      ) : skills.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="text-5xl mb-4">🔍</div>
-          <p className="text-gray-400 text-lg mb-2">暂无相关内容</p>
-          <p className="text-gray-300 text-sm mb-4">当前筛选条件下没有找到 Skill</p>
-          <button
-            onClick={() => {
-              setCategory('all');
-              setSort('hot');
-            }}
-            className="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            清除筛选
-          </button>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {skills.map((skill, index) => (
-              <div
-                key={skill.id}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${index * 50}ms` }}
+        {/* Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+          {/* Sort */}
+          <div className="inline-flex items-center rounded-lg border border-zinc-200 p-0.5">
+            {(['hot', 'new'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => handleSortChange(s)}
+                className={`px-3.5 py-1.5 text-[13px] font-medium rounded-md transition-colors ${
+                  sort === s
+                    ? 'bg-zinc-900 text-white'
+                    : 'text-zinc-500 hover:text-zinc-800'
+                }`}
               >
-                <SkillCard skill={skill} />
-              </div>
+                {s === 'hot' ? '最热' : '最新'}
+              </button>
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-10">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-3 py-2 text-sm rounded-lg border border-gray-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-              >
-                上一页
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`w-9 h-9 text-sm rounded-lg transition-colors ${
-                    p === page
-                      ? 'bg-gray-900 text-white'
-                      : 'border border-gray-200 hover:bg-gray-50 text-gray-600'
-                  }`}
+          {/* Category */}
+          <div className="flex flex-wrap gap-2">
+            <FilterChip
+              label="全部"
+              active={category === 'all'}
+              onClick={() => handleCategoryChange('all')}
+            />
+            {CATEGORIES.map((cat) => (
+              <FilterChip
+                key={cat.id}
+                label={`${cat.icon} ${cat.label}`}
+                active={category === cat.id}
+                onClick={() => handleCategoryChange(cat.id)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkillCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-24">
+            <p className="text-zinc-400 text-sm mb-4">{error}</p>
+            <button
+              onClick={fetchSkills}
+              className="px-4 py-2 text-[13px] text-zinc-700 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors"
+            >
+              重新加载
+            </button>
+          </div>
+        ) : skills.length === 0 ? (
+          <div className="text-center py-24">
+            <p className="text-zinc-400 text-sm mb-1">暂无相关内容</p>
+            <p className="text-zinc-300 text-[13px] mb-5">当前筛选条件下没有找到 Skill</p>
+            <button
+              onClick={() => {
+                setCategory('all');
+                setSort('hot');
+              }}
+              className="px-4 py-2 text-[13px] text-zinc-700 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-colors"
+            >
+              清除筛选
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {skills.map((skill, index) => (
+                <div
+                  key={skill.id}
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${index * 40}ms` }}
                 >
-                  {p}
-                </button>
+                  <SkillCard skill={skill} />
+                </div>
               ))}
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="px-3 py-2 text-sm rounded-lg border border-gray-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-              >
-                下一页
-              </button>
             </div>
-          )}
-        </>
-      )}
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-1.5 mt-12">
+                <PageButton
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  label="上一页"
+                />
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-8 h-8 text-[13px] rounded-md transition-colors ${
+                      p === page
+                        ? 'bg-zinc-900 text-white'
+                        : 'text-zinc-500 hover:bg-zinc-100'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+                <PageButton
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  label="下一页"
+                />
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
+  );
+}
+
+function FilterChip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1.5 text-[13px] rounded-full border transition-colors ${
+        active
+          ? 'bg-zinc-900 text-white border-zinc-900'
+          : 'bg-white text-zinc-500 border-zinc-200 hover:border-zinc-300 hover:text-zinc-700'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function PageButton({
+  onClick,
+  disabled,
+  label,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="px-3 py-1.5 text-[13px] rounded-md text-zinc-500 border border-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
+    >
+      {label}
+    </button>
   );
 }
